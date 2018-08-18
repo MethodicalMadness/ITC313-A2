@@ -1,0 +1,3 @@
+Employee Id		Taxable Income 		Tax
+1111			100000.00			24632
+2222			90000.00			20932
