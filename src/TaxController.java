@@ -33,10 +33,10 @@ public class TaxController {
         }
         String thisLine = "";
         try {
-            Scanner input = new Scanner(new File(pathname));
+            Scanner fileInput = new Scanner(new File(pathname));
             int i = 0;
-            while(input.hasNextLine()){
-                thisLine = input.nextLine();
+            while(fileInput.hasNextLine()){
+                thisLine = fileInput.nextLine();
                 thisLine = thisLine.replaceAll("[,]", ""); //condense the numbers
                 thisLine = thisLine.replaceAll("\\D+"," "); //remove noise
                 thisLine = thisLine.replaceAll("^\\s+", ""); //remove leading whitespace
@@ -52,7 +52,7 @@ public class TaxController {
                         } catch (NumberFormatException e){
                             System.out.println("NumberFormatException @" + j);
                         }
-                        System.out.println(j + ":" + strArray[j]); //testing
+                        //System.out.println(j + ":" + strArray[j]); //testing
                     }
                 }
                 if(i == 0){
@@ -84,12 +84,11 @@ public class TaxController {
                 }
                 i++;
             }
-            input.close();
         } catch(FileNotFoundException e) {
             System.out.println("File not found!");
             System.out.println("Please enter file path or name");
-            Scanner userInput = new Scanner(System.in);
-            pathname = userInput.nextLine();
+            Scanner input = new Scanner(System.in);
+            pathname = input.nextLine();
             processTaxRatesTxt(pathname);
         }
     }
