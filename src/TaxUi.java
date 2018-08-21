@@ -23,17 +23,19 @@ public class TaxUi {
         displayMenu();
         int selection = menuSelection();
         switch (selection) {
-            case 0:
-                System.out.println("An error successfully occurred, please restart the program");
             case 1:
                 System.out.println("You have chosen '1' to calculate tax");
                 selectionOne();
             case 2:
                 System.out.println("You have chosen '2' to search tax records");
+                selectionTwo();
             case 3:
                 System.out.println("You have chosen '3' to exit the program");
+                selectionThree();
             default:
-                System.out.println("Wow, this is embarrassing. Something has gone wrong, please restart the program.");
+                System.out.println("An error occurred in TaxUi.userInterface() " +
+                        "Exiting the program.");
+                System.exit(1);
         }
     }
 
@@ -45,12 +47,12 @@ public class TaxUi {
             if (input.hasNextInt()){
                 selection = input.nextInt();
                 if(selection < 1 || selection > 3){
-                    System.out.println("Unexpected input. Please try again.");
+                    System.out.println("Please try again.");
                 } else {
                     break;
                 }
             } else {
-                System.out.println("Unexpected input. Please try again.");
+                System.out.println("Please try again.");
                 input.next();
             }
         }
@@ -58,24 +60,11 @@ public class TaxUi {
     }
 
     private void selectionOne(){
-        Scanner input = new Scanner(System.in);
         int id;
         double income;
         double tax;
-        System.out.println("Please enter the 4 digits employees id.");
-        while (true){
-            if (input.hasNextInt()){
-                id = input.nextInt();
-                if(String.valueOf(id).length() != 4){
-                    System.out.println("Employee Id must be 4 digits");
-                } else {
-                    break;
-                }
-            } else {
-                System.out.println("Employee Id must be 4 digits");
-                input.next();
-            }
-        }
+        Scanner input = new Scanner(System.in);
+        id = checkId(); //need to fix leading zeros
         System.out.println("Please enter the employees annual income.");
         while (true) {
             if (input.hasNextDouble()) {
@@ -90,10 +79,10 @@ public class TaxUi {
                 input.next();
             }
         }
-        tax = taxController.determineTax(income);
+        tax = taxController.determineTaxThreshold(income);
         Employee employee = new Employee(String.valueOf(id), income, tax);
-        System.out.println(employee.toString()); //testing
-        System.out.println("Would you like to calculate the tax for another employee?");
+        taxController.writeToTaxReport(employee);
+        System.out.println("Would you like to calculate the tax for another employee? [Y/N]");
         while (true) {
             String answer = input.next();
             switch (answer){
@@ -104,14 +93,65 @@ public class TaxUi {
                     selectionOne();
                     break;
                 case "N":
-                    menuSelection();
+                    userInteface();
                     break;
                 case "n":
-                    menuSelection();
+                    userInteface();
                     break;
                 default:
                     System.out.println("Please try again.");
             }
         }
+    }
+
+    private int checkId(){
+        Scanner input = new Scanner(System.in);
+        System.out.println("Please enter the 4 digits employees id.");
+        int id;
+        while (true){
+            if (input.hasNextInt()){
+                id = input.nextInt();
+                if(String.valueOf(id).length() != 4){
+                    System.out.println("Employee Id must be 4 digits");
+                } else {
+                    break;
+                }
+            } else {
+                System.out.println("Employee Id must be 4 digits");
+                input.next();
+            }
+        }
+        return id;
+    }
+
+    private void selectionTwo(){
+        int id = checkId();
+        taxController.getEmployeeTaxRecord(id);
+        System.out.println("Would you like to search the tax records for another employee? [Y/N]");
+        Scanner input = new Scanner(System.in);
+        while (true) {
+            String answer = input.next();
+            switch (answer){
+                case "Y":
+                    selectionTwo();
+                    break;
+                case "y":
+                    selectionTwo();
+                    break;
+                case "N":
+                    userInteface();
+                    break;
+                case "n":
+                    userInteface();
+                    break;
+                default:
+                    System.out.println("Please try again.");
+            }
+        }
+    }
+
+    private void selectionThree(){
+        System.out.println("Thank you for using 'Tax Man v1.0'");
+        System.exit(0);
     }
 }

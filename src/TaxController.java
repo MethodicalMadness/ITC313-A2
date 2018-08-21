@@ -1,9 +1,9 @@
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TaxController {
-
 
     private double thresholdA;
     private double thresholdB;
@@ -22,10 +22,8 @@ public class TaxController {
     private double perD;
     private double perE;
 
-
     public TaxController() {
     }
-
 
     public void processTaxRatesTxt(String pathname){
         if(pathname == ""){
@@ -34,50 +32,48 @@ public class TaxController {
         String thisLine = "";
         try {
             Scanner fileInput = new Scanner(new File(pathname));
-            int i = 0;
+            int i = 1;
+            fileInput.nextLine(); //ignore first array, it is empty.
             while(fileInput.hasNextLine()){
                 thisLine = fileInput.nextLine();
+                String cleanLine = "";
                 thisLine = thisLine.replaceAll("[,]", ""); //condense the numbers
-                thisLine = thisLine.replaceAll("\\D+"," "); //remove noise
-                thisLine = thisLine.replaceAll("^\\s+", ""); //remove leading whitespace
-                String strArray[] = thisLine.split(" "); //place whole numbers into array
-                int[] intArray = new int[strArray.length];
-                //System.out.println("array length = " + intArray.length); //testing
-                if(i == 0) {
-                    //ignore first array, it is empty.
-                }else {
-                    for(int j = 0 ; j < strArray.length ; j++){
-                        try {
-                            intArray[j] = Integer.parseInt(strArray[j]);
-                        } catch (NumberFormatException e){
-                            System.out.println("NumberFormatException @" + j);
-                        }
-                        //System.out.println(j + ":" + strArray[j]); //testing
-                    }
+                Pattern regex = Pattern.compile("(\\d+(?:\\.\\d+)?)");
+                Matcher matcher = regex.matcher(thisLine);
+                while(matcher.find()){
+                    cleanLine += matcher.group(1) + " ";
                 }
-                if(i == 0){
-                    //ignore first array, it is empty.
-                } else if(i == 1){
-                    thresholdA = (double)intArray[1];
-                    taxRateA = (double)intArray[2]/100;
+                String strArray[] = cleanLine.split(" "); //place numbers into array
+                double[] doubleArray = new double[strArray.length];
+                for(int j = 0 ; j < strArray.length ; j++){
+                    try {
+                        doubleArray[j] = Double.valueOf(strArray[j]);
+                    } catch (NumberFormatException e){
+                        System.out.println("NumberFormatException @" + j);
+                    }
+                    //System.out.println(j + ":" + strArray[j]); //testing
+                }
+                if(i == 1){
+                    thresholdA = (double)doubleArray[1];
+                    taxRateA = (double)doubleArray[2];
                 } else if(i == 2){
-                    thresholdB = (double)intArray[1];
-                    taxRateB = (double)intArray[2]/100;
-                    perB = (double)intArray[3];
+                    thresholdB = (double)doubleArray[1];
+                    taxRateB = (double)doubleArray[2]/100d;
+                    perB = (double)doubleArray[3];
                 } else if(i == 3){
-                    thresholdC = (double)intArray[1];
-                    plusC = (double)intArray[2];
-                    taxRateC = ((double)intArray[3] + ((double)intArray[4]/10))/100;
-                    perC = (double)intArray[5];
+                    thresholdC = (double)doubleArray[1];
+                    plusC = (double)doubleArray[2];
+                    taxRateC = (double)doubleArray[3]/100d;
+                    perC = (double)doubleArray[4];
                 } else if(i == 4){
-                    thresholdD = (double)intArray[1];
-                    plusD = (double)intArray[2];
-                    taxRateD = (double)intArray[3]/100;
-                    perD = (double)intArray[4];
+                    thresholdD = (double)doubleArray[1];
+                    plusD = (double)doubleArray[2];
+                    taxRateD = (double)doubleArray[3]/100d;
+                    perD = (double)doubleArray[4];
                 } else if(i == 5){
-                    plusE = (double)intArray[1];
-                    taxRateE = (double)intArray[2]/100;
-                    perE = (double)intArray[3];
+                    plusE = (double)doubleArray[1];
+                    taxRateE = (double)doubleArray[2]/100d;
+                    perE = (double)doubleArray[3];
                 } else{
                     //Some who wander are not lost, but you sure are
                     break;
@@ -93,8 +89,7 @@ public class TaxController {
         }
     }
 
-
-    public double determineTax(double income){
+    public double determineTaxThreshold(double income){
         double tax = 0.00;
         if (income <= thresholdA){
             tax = taxRateA;
@@ -114,5 +109,94 @@ public class TaxController {
         double tax = 0;
         tax = (((income - prevThreshold)*taxRate)+plus)/per;
         return tax;
+    }
+
+    public void writeToTaxReport(Employee employee) {
+        File taxReport = new File("taxreport.txt");
+        FileWriter output;
+        String header = "Employee Id\t\tTaxable Income\t\tTax";
+        try {
+            if(taxReport.exists()){
+                output = new FileWriter(taxReport,true);
+                output.write(employee.toString());
+                System.out.println(header);
+                System.out.println(employee.toString());
+                output.close();
+            }else{
+                output = new FileWriter(taxReport);
+                output.write(header);
+                output.close();
+                writeToTaxReport(employee);
+            }
+        } catch (IOException e) {
+            System.err.println("IOException: " + e.getMessage());
+        }
+    }
+
+    private HashMap<Integer, Employee> processTaxRecords(String pathname){
+        HashMap<Integer, Employee> employeeMap = new HashMap<Integer, Employee>();
+        if(pathname == ""){
+            pathname = "taxreport.txt";
+        }
+        String thisLine = "";
+        try {
+            Scanner fileInput = new Scanner(new File(pathname));
+            fileInput.nextLine();
+            while (fileInput.hasNextLine()) {
+                thisLine = fileInput.nextLine();
+                String temp = "";
+                Pattern regex = Pattern.compile("(\\d+(?:\\.\\d+)?)");
+                Matcher matcher = regex.matcher(thisLine);
+                int i = 0;
+                String id = "";
+                double income = 0d;
+                double tax = 0d;
+                while (matcher.find()) {
+                    temp = matcher.group(1);
+                    if (i == 0) {
+                        id = temp;
+                        i = 1;
+                    }else if (i == 1) {
+                        income = Double.valueOf(temp);
+                        i = 2;
+                    }else if (i == 2) {
+                        tax = Double.valueOf(temp);
+                        i = 3;
+                    }else if (i == 3) {
+                        Employee employee = new Employee(id, income, tax);
+                        employeeMap.put(Integer.valueOf(id), employee); //never gets added
+                        id = temp;
+                        i = 1;
+                    }else{
+                        System.out.println("It appears as though something went wrong while" +
+                                " populating the employee hash map. Exiting the program.");
+                        System.exit(1);
+                    }
+                }
+            }
+        }catch(FileNotFoundException e) {
+            System.out.println("File not found!");
+            System.out.println("Please enter file path or name");
+            Scanner input = new Scanner(System.in);
+            pathname = input.nextLine();
+            processTaxRecords(pathname);
+        }
+        return employeeMap;
+    }
+
+    public void getEmployeeTaxRecord(int id){
+        HashMap<Integer, Employee> employeeMap = processTaxRecords("");
+        if(employeeMap.containsKey(id)){
+            Employee employee = employeeMap.get(id);
+            String header = "Employee Id\t\tTaxable Income\t\tTax";
+            System.out.println(header);
+            System.out.println(employee.toString());
+        }else {
+            if (employeeMap.size() == 0){
+                System.out.println("You appear to not have any employees.");
+            }else {
+                System.out.println("That key does not appear to exist.");
+            }
+        }
     }
 }

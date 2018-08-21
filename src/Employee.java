@@ -1,4 +1,4 @@
-
+import java.text.DecimalFormat;
 
 public class Employee {
 
@@ -10,38 +10,14 @@ public class Employee {
 
     public Employee(String employeeId, double employeeIncome, double employeeTax) {
         this.employeeId = employeeId;
-        this.employeeIncome = employeeIncome;
-        this.employeeTax = employeeTax;
-    }
-
-    public void setEmployeeId(String employeeId) {
-        this.employeeId = employeeId;
-    }
-
-    public void setEmployeeIncome(double employeeIncome) {
-        this.employeeIncome = employeeIncome;
-    }
-
-    public void setEmployeeTax(double employeeTax) {
-        this.employeeTax = employeeTax;
-    }
-
-    public String getEmployeeId() {
-        return employeeId;
-    }
-
-    public double getEmployeeIncome() {
-        return employeeIncome;
-    }
-
-    public double getEmployeeTax() {
-        return employeeTax;
+        this.employeeIncome = (double)Math.round(employeeIncome* 100d) / 100d;
+        this.employeeTax = (double)Math.round(employeeTax* 100d) / 100d;
     }
 
     @Override
     public String toString() {
-        return "Employee Id =" + employeeId +
-                ", Income =" + employeeIncome +
-                ", Tax =" + employeeTax;
+        DecimalFormat df = new DecimalFormat("#0.00");
+        return "\r\n" + employeeId + "\t\t\t" + df.format(employeeIncome) +
+                "\t\t" + df.format(employeeTax);
     }
 }
