@@ -30,7 +30,7 @@ public class Employee {
     public String toString() {
         DecimalFormat df = new DecimalFormat("#0.00");
         String formattedDescription = "\r\n" + employeeId + "\t\t\t" + df.format(employeeIncome) +
-                "\t\t" + df.format(employeeTax);
+                "\t\t\t" + df.format(employeeTax);
         return formattedDescription;
     }
 }
