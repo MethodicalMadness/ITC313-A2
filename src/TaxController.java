@@ -3,6 +3,9 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * @author Michael Coleman
+ */
 public class TaxController {
 
     private double thresholdA;
@@ -22,9 +25,18 @@ public class TaxController {
     private double perD;
     private double perE;
 
+    /**
+     * No args TaxController Constructor
+     */
     public TaxController() {
     }
 
+    /**
+     * Method that processes the taxrates.txt,
+     * asks user to supply the path / filename
+     * if the default file is not present
+     * @param pathname
+     */
     public void processTaxRatesTxt(String pathname){
         if(pathname == ""){
             pathname = "taxrates.txt";
@@ -38,7 +50,7 @@ public class TaxController {
                 thisLine = fileInput.nextLine();
                 String cleanLine = "";
                 thisLine = thisLine.replaceAll("[,]", ""); //condense the numbers
-                Pattern regex = Pattern.compile("(\\d+(?:\\.\\d+)?)");
+                Pattern regex = Pattern.compile("(\\d+(?:\\.\\d+)?)"); //digits and decimals follwed by digits
                 Matcher matcher = regex.matcher(thisLine);
                 while(matcher.find()){
                     cleanLine += matcher.group(1) + " ";
@@ -55,7 +67,7 @@ public class TaxController {
                 }
                 if(i == 1){
                     thresholdA = (double)doubleArray[1];
-                    taxRateA = (double)doubleArray[2];
+                    taxRateA = (double)doubleArray[2]/100d; //all taxrates are in cents, so need to be /100
                 } else if(i == 2){
                     thresholdB = (double)doubleArray[1];
                     taxRateB = (double)doubleArray[2]/100d;
@@ -76,6 +88,8 @@ public class TaxController {
                     perE = (double)doubleArray[3];
                 } else{
                     //Some who wander are not lost, but you sure are
+                    System.out.println("A logic error occurred in " +
+                            "TaxController.processTaxRatesTxt()");
                     break;
                 }
                 i++;
@@ -89,6 +103,13 @@ public class TaxController {
         }
     }
 
+    /**
+     * Accepts a double and calulates the threshold,
+     * gets the caclulated tax from calcTax and
+     * returns the tax amount to the user interface
+     * @param income
+     * @return tax amount as a double
+     */
     public double determineTaxThreshold(double income){
         double tax = 0.00;
         if (income <= thresholdA){
@@ -105,12 +126,25 @@ public class TaxController {
         return tax;
     }
 
-    public double calcTax(double income, double prevThreshold, double taxRate, double per, double plus){
+    /**
+     * Method that calculates tax
+     * @param income
+     * @param prevThreshold
+     * @param taxRate
+     * @param per
+     * @param plus
+     * @return tax amount as a double
+     */
+    private double calcTax(double income, double prevThreshold, double taxRate, double per, double plus){
         double tax = 0;
         tax = (((income - prevThreshold)*taxRate)+plus)/per;
         return tax;
     }
 
+    /**
+     * Adds an employee to the taxreport.txt, if file is not found, one is created.
+     * @param employee
+     */
     public void writeToTaxReport(Employee employee) {
         File taxReport = new File("taxreport.txt");
         FileWriter output;
@@ -133,6 +167,14 @@ public class TaxController {
         }
     }
 
+    /**
+     * Method that prcesses the taxreport.txt
+     * If file is not found, it requests one
+     * Method takes the taxreport and coverts each line into Employee objects
+     * which are in turn added to a hashmap
+     * @param pathname
+     * @return HashMap populated with Employee objects
+     */
     private HashMap<Integer, Employee> processTaxRecords(String pathname){
         HashMap<Integer, Employee> employeeMap = new HashMap<Integer, Employee>();
         if(pathname == ""){
@@ -181,6 +223,11 @@ public class TaxController {
         return employeeMap;
     }
 
+    /**
+     * Method that uses an employee id to search a
+     * hashmap and prints the employees details
+     * @param id
+     */
     public void getEmployeeTaxRecord(String id){
         HashMap<Integer, Employee> employeeMap = processTaxRecords("");
         int key = Integer.valueOf(id);
@@ -198,6 +245,10 @@ public class TaxController {
         }
     }
 
+    /**
+     * Method requests and validates syntax and format of employee id
+     * @return valid id as a String
+     */
     public String checkId(){
         Scanner input = new Scanner(System.in);
         System.out.println("Please enter the 4 digit employees id -leading zeros will be padded/trimmed as necessary");

@@ -1,24 +1,35 @@
 import java.util.Scanner;
 
+/**
+ * @author Michael Coleman
+ */
 public class TaxUi {
 
     private TaxController taxController;
 
+    /**
+     * No args constructor, creates taxController.
+     */
     public TaxUi() {
         taxController = new TaxController();
     }
 
-    public TaxUi(TaxController taxController) {
-        this.taxController = taxController;
-    }
-
+    /**
+     * Method to display the menu options.
+     */
     private void displayMenu(){
-        System.out.println("Please select one of the following options:");
-        System.out.println("Choose '1' to calculate tax");
-        System.out.println("Choose '2' to search tax records");
-        System.out.println("Choose '3' to exit program");
+        System.out.println("|-----------* * * Tax Man v1.0 * * *----------|");
+        System.out.println("| Please select one of the following options: |");
+        System.out.println("|---------------------------------------------|");
+        System.out.println("| Choose '1' to calculate tax                 |");
+        System.out.println("| Choose '2' to search tax records            |");
+        System.out.println("| Choose '3' to exit program                  |");
+        System.out.println("|---------------------------------------------|");
     }
 
+    /**
+     * method that uses ints to select the menu options
+     */
     public void userInteface() {
         displayMenu();
         int selection = menuSelection();
@@ -39,6 +50,10 @@ public class TaxUi {
         }
     }
 
+    /**
+     * Method that determines if input is acceptable for the userInterface()
+     * @return Integer that is acceptable for the userInterface() selection
+     */
     private int menuSelection(){
         taxController.processTaxRatesTxt("");
         Scanner input = new Scanner(System.in);
@@ -59,6 +74,10 @@ public class TaxUi {
         return selection;
     }
 
+    /**
+     * Method contains logic required to guide user through the
+     * calculation of tax for one employee at a time.
+     */
     private void selectionOne(){
         String id;
         double income;
@@ -104,6 +123,10 @@ public class TaxUi {
         }
     }
 
+    /**
+     * Method contains logic required to guide user through
+     * searching the tax records.
+     */
     private void selectionTwo(){
         String id = taxController.checkId();
         taxController.getEmployeeTaxRecord(id);
@@ -130,6 +153,9 @@ public class TaxUi {
         }
     }
 
+    /**
+     * simple thank you and exits the program with exit code zero.
+     */
     private void selectionThree(){
         System.out.println("Thank you for using 'Tax Man v1.0'");
         System.exit(0);
