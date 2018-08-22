@@ -161,12 +161,9 @@ public class TaxController {
                         i = 2;
                     }else if (i == 2) {
                         tax = Double.valueOf(temp);
-                        i = 3;
-                    }else if (i == 3) {
                         Employee employee = new Employee(id, income, tax);
-                        employeeMap.put(Integer.valueOf(id), employee); //never gets added
-                        id = temp;
-                        i = 1;
+                        employeeMap.put(Integer.valueOf(id), employee);
+                        i = 0;
                     }else{
                         System.out.println("It appears as though something went wrong while" +
                                 " populating the employee hash map. Exiting the program.");
@@ -184,10 +181,11 @@ public class TaxController {
         return employeeMap;
     }
 
-    public void getEmployeeTaxRecord(int id){
+    public void getEmployeeTaxRecord(String id){
         HashMap<Integer, Employee> employeeMap = processTaxRecords("");
-        if(employeeMap.containsKey(id)){
-            Employee employee = employeeMap.get(id);
+        int key = Integer.valueOf(id);
+        if(employeeMap.containsKey(key)){
+            Employee employee = employeeMap.get(key);
             String header = "Employee Id\t\tTaxable Income\t\tTax";
             System.out.println(header);
             System.out.println(employee.toString());
@@ -198,5 +196,27 @@ public class TaxController {
                 System.out.println("That key does not appear to exist.");
             }
         }
+    }
+
+    public String checkId(){
+        Scanner input = new Scanner(System.in);
+        System.out.println("Please enter the 4 digit employees id -leading zeros will be padded/trimmed as necessary");
+        int id;
+        String strId = "";
+        while (true){
+            if (input.hasNext()){
+                id = input.nextInt();
+                strId = String.format("%04d", id);
+                if(strId.length() != 4 && id < 0){
+                    System.out.println("Employee Id must be 4 digits");
+                } else {
+                    break;
+                }
+            } else {
+                System.out.println("Employee Id must be 4 digits");
+                input.next();
+            }
+        }
+        return strId;
     }
 }

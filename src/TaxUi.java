@@ -60,11 +60,11 @@ public class TaxUi {
     }
 
     private void selectionOne(){
-        int id;
+        String id;
         double income;
         double tax;
         Scanner input = new Scanner(System.in);
-        id = checkId(); //need to fix leading zeros
+        id = taxController.checkId(); //need to fix leading zeros
         System.out.println("Please enter the employees annual income.");
         while (true) {
             if (input.hasNextDouble()) {
@@ -104,28 +104,8 @@ public class TaxUi {
         }
     }
 
-    private int checkId(){
-        Scanner input = new Scanner(System.in);
-        System.out.println("Please enter the 4 digits employees id.");
-        int id;
-        while (true){
-            if (input.hasNextInt()){
-                id = input.nextInt();
-                if(String.valueOf(id).length() != 4){
-                    System.out.println("Employee Id must be 4 digits");
-                } else {
-                    break;
-                }
-            } else {
-                System.out.println("Employee Id must be 4 digits");
-                input.next();
-            }
-        }
-        return id;
-    }
-
     private void selectionTwo(){
-        int id = checkId();
+        String id = taxController.checkId();
         taxController.getEmployeeTaxRecord(id);
         System.out.println("Would you like to search the tax records for another employee? [Y/N]");
         Scanner input = new Scanner(System.in);
