@@ -95,10 +95,11 @@ public class TaxController {
                 i++;
             }
         } catch(FileNotFoundException e) {
-            System.out.println("File not found!");
+            System.out.println("taxrates.txt not found!");
             System.out.println("Please enter file path or name");
             Scanner input = new Scanner(System.in);
             pathname = input.nextLine();
+            System.out.println("You may now make your selection");
             processTaxRatesTxt(pathname);
         }
     }
@@ -173,10 +174,13 @@ public class TaxController {
      * Method takes the taxreport and coverts each line into Employee objects
      * which are in turn added to a hashmap
      * @param pathname
+     * @param employeeMap
      * @return HashMap populated with Employee objects
      */
-    private HashMap<Integer, Employee> processTaxRecords(String pathname){
-        HashMap<Integer, Employee> employeeMap = new HashMap<Integer, Employee>();
+    private HashMap<Integer, Employee> processTaxRecords(String pathname, HashMap<Integer, Employee> employeeMap){
+        if (employeeMap == null){
+            employeeMap = new HashMap<Integer, Employee>();
+        }
         if(pathname == ""){
             pathname = "taxreport.txt";
         }
@@ -213,12 +217,13 @@ public class TaxController {
                     }
                 }
             }
+            fileInput.close();
         }catch(FileNotFoundException e) {
             System.out.println("File not found!");
             System.out.println("Please enter file path or name");
             Scanner input = new Scanner(System.in);
             pathname = input.nextLine();
-            processTaxRecords(pathname);
+            processTaxRecords(pathname, employeeMap);
         }
         return employeeMap;
     }
@@ -229,7 +234,7 @@ public class TaxController {
      * @param id
      */
     public void getEmployeeTaxRecord(String id){
-        HashMap<Integer, Employee> employeeMap = processTaxRecords("");
+        HashMap<Integer, Employee> employeeMap = processTaxRecords("", null);
         int key = Integer.valueOf(id);
         if(employeeMap.containsKey(key)){
             Employee employee = employeeMap.get(key);
@@ -255,10 +260,10 @@ public class TaxController {
         int id;
         String strId = "";
         while (true){
-            if (input.hasNext()){
+            if (input.hasNextInt()){
                 id = input.nextInt();
                 strId = String.format("%04d", id);
-                if(strId.length() != 4 && id < 0){
+                if(strId.length() != 4 || id < 0 || id > 9999){
                     System.out.println("Employee Id must be 4 digits");
                 } else {
                     break;

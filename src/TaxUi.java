@@ -17,7 +17,7 @@ public class TaxUi {
     /**
      * Method to display the menu options.
      */
-    private void displayMenu(){
+    public void displayMenu(){
         System.out.println("|-----------* * * Tax Man v1.0 * * *----------|");
         System.out.println("| Please select one of the following options: |");
         System.out.println("|---------------------------------------------|");
