@@ -23,7 +23,7 @@
 hs_err_pid*
 
 # ignore these files and directories
-taxreport.txt
+cluster.txt
 .idea
-repo.iml
+A2task2.iml
 out/
