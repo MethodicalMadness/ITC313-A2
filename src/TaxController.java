@@ -45,7 +45,7 @@ public class TaxController {
         try {
             Scanner fileInput = new Scanner(new File(pathname));
             int i = 1;
-            fileInput.nextLine(); //ignore first array, it is empty.
+            fileInput.nextLine(); //ignore first line
             while(fileInput.hasNextLine()){
                 thisLine = fileInput.nextLine();
                 String cleanLine = "";
