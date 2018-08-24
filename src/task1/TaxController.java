@@ -1,3 +1,5 @@
+package task1;
+
 import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -26,7 +28,7 @@ public class TaxController {
     private double perE;
 
     /**
-     * No args TaxController Constructor
+     * No args task1.TaxController Constructor
      */
     public TaxController() {
     }
@@ -45,7 +47,7 @@ public class TaxController {
         try {
             Scanner fileInput = new Scanner(new File(pathname));
             int i = 1;
-            fileInput.nextLine(); //ignore first array, it is empty.
+            fileInput.nextLine(); //ignore first line
             while(fileInput.hasNextLine()){
                 thisLine = fileInput.nextLine();
                 String cleanLine = "";
@@ -89,7 +91,7 @@ public class TaxController {
                 } else{
                     //Some who wander are not lost, but you sure are
                     System.out.println("A logic error occurred in " +
-                            "TaxController.processTaxRatesTxt()");
+                            "task1.TaxController.processTaxRatesTxt()");
                     break;
                 }
                 i++;
@@ -149,7 +151,7 @@ public class TaxController {
     public void writeToTaxReport(Employee employee) {
         File taxReport = new File("taxreport.txt");
         FileWriter output;
-        String header = "Employee Id\t\tTaxable Income\t\tTax";
+        String header = "task1.Employee Id\t\tTaxable Income\t\tTax";
         try {
             if(taxReport.exists()){
                 output = new FileWriter(taxReport,true);
@@ -171,11 +173,11 @@ public class TaxController {
     /**
      * Method that prcesses the taxreport.txt
      * If file is not found, it requests one
-     * Method takes the taxreport and coverts each line into Employee objects
+     * Method takes the taxreport and coverts each line into task1.Employee objects
      * which are in turn added to a hashmap
      * @param pathname
      * @param employeeMap
-     * @return HashMap populated with Employee objects
+     * @return HashMap populated with task1.Employee objects
      */
     private HashMap<Integer, Employee> processTaxRecords(String pathname, HashMap<Integer, Employee> employeeMap){
         if (employeeMap == null){
@@ -238,7 +240,7 @@ public class TaxController {
         int key = Integer.valueOf(id);
         if(employeeMap.containsKey(key)){
             Employee employee = employeeMap.get(key);
-            String header = "Employee Id\t\tTaxable Income\t\tTax";
+            String header = "task1.Employee Id\t\tTaxable Income\t\tTax";
             System.out.println(header);
             System.out.println(employee.toString());
         }else {
@@ -264,12 +266,12 @@ public class TaxController {
                 id = input.nextInt();
                 strId = String.format("%04d", id);
                 if(strId.length() != 4 || id < 0 || id > 9999){
-                    System.out.println("Employee Id must be 4 digits");
+                    System.out.println("task1.Employee Id must be 4 digits");
                 } else {
                     break;
                 }
             } else {
-                System.out.println("Employee Id must be 4 digits");
+                System.out.println("task1.Employee Id must be 4 digits");
                 input.next();
             }
         }

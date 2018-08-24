@@ -1,3 +1,5 @@
+package task1;
+
 import java.util.Scanner;
 
 /**
@@ -44,7 +46,7 @@ public class TaxUi {
                 System.out.println("You have chosen '3' to exit the program");
                 selectionThree();
             default:
-                System.out.println("An error occurred in TaxUi.userInterface() " +
+                System.out.println("An error occurred in task1.TaxUi.userInterface() " +
                         "Exiting the program.");
                 System.exit(1);
         }
@@ -89,12 +91,12 @@ public class TaxUi {
             if (input.hasNextDouble()) {
                 income = input.nextDouble();
                 if (income < 0) {
-                    System.out.println("Employee income must be a number greater than zero");
+                    System.out.println("task1.Employee income must be a number greater than zero");
                 } else {
                     break;
                 }
             } else {
-                System.out.println("Employee income must be a number greater than zero");
+                System.out.println("task1.Employee income must be a number greater than zero");
                 input.next();
             }
         }
