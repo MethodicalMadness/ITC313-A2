@@ -24,6 +24,6 @@ hs_err_pid*
 
 # ignore these files and directories
 taxreport.txt
-.idea
+.idea/
 repo.iml
 out/

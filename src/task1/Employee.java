@@ -1,3 +1,5 @@
+package task1;
+
 import java.text.DecimalFormat;
 
 /**
@@ -11,7 +13,7 @@ public class Employee {
     double employeeTax;
 
     /**
-     * Employee Constructor
+     * task1.Employee Constructor
      * @param employeeId
      * @param employeeIncome
      * @param employeeTax
